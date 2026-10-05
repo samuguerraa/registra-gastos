@@ -1,21 +1,28 @@
-import math
+import datetime
 import re
 
 gastos = []
 def registrar_gasto():
 
+    fecha = obtener_fecha()
     categoria = obtener_categoria()
     descripcion = obtener_descripcion()
     valor = obtener_valor()
             
 
     gasto = {   
+        "fecha": fecha,
         "categoria": categoria,
         "descripcion": descripcion,
         "valor": valor
     }
 
     return gasto
+
+def obtener_fecha():
+    fecha = datetime.date.today()
+    return fecha
+
 
 def obtener_categoria(): 
     categorias = ["Transporte", "Alimentacion / Restaurantes", "Entretenimiento / Ocio", "Salud", "Educacion", "Ropa / Calzado", "Supermercado", "Viajes", "Servicios",
@@ -32,7 +39,7 @@ def obtener_categoria():
         except ValueError:
             print("Opcion invalida. Intente nuevamente\n")
         else:
-            if categoria not in range (1, 12):
+            if categoria not in range (1, len(categorias) + 1):
                 print("Opcion invalida. Intente nuevamente\n")
             else: 
                 break
@@ -59,8 +66,8 @@ def obtener_valor():
     while True:
         valor = input("Ingrese valor en COP: ")
         if re.fullmatch(r"\d{1,3}([.,]\d{3})*|\d+", valor):
-            valor.strip() = valor.replace(',', '')
-            valor.strip() = valor.replace('.', '')
+            valor = valor.replace(',', '')
+            valor = valor.replace('.', '')
             valor_numerico = int(valor.strip())
             if valor_numerico > 0:
                 return valor_numerico
@@ -78,7 +85,7 @@ def mostrar_gastos():
         print("No hay gastos registrados")
     else:
         for indice, gasto in enumerate(gastos, start=1):
-            print(f"Gasto #{indice}:\nCategoria: {gasto['categoria']}\nDescripción: {gasto['descripcion']}\nValor: {gasto['valor']}\n")
+            print(f"Gasto #{indice}:\nFecha: {gasto['fecha']}\nCategoria: {gasto['categoria']}\nDescripción: {gasto['descripcion']}\nValor: {gasto['valor']}\n")
 
 def calcular_total_gastado():
     total_gastos = 0
