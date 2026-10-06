@@ -223,12 +223,13 @@ def buscar_por_descripcion():
         descripcion_buscada = descripcion_buscada.strip()
         descripcion_buscada = descripcion_buscada.lower()
         gastos_encontrados = False
-        for indice, gasto in enumerate(gastos):
-            descripcion_normalizada = gasto['descripcion']
-            descripcion_normalizada = descripcion_normalizada.lower()
-            if not descripcion_buscada:
-                print("No se introdujo ningún critero de búsqueda. Intente nuevamente\n")
-            else:
+        if not descripcion_buscada:
+            print("No se introdujo ningún critero de búsqueda. Intente nuevamente\n")
+            continue
+        else:
+            for indice, gasto in enumerate(gastos):
+                descripcion_normalizada = gasto['descripcion']
+                descripcion_normalizada = descripcion_normalizada.lower()
                 if descripcion_buscada in descripcion_normalizada:
                     gastos_encontrados = True
                     print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
@@ -237,11 +238,19 @@ def buscar_por_descripcion():
             return
         return
 
+def buscar_por_fechas():
+    pass 
+    # Expected function for v1.5.4
+
+def buscar_por_valor():
+    pass
+    #Expected function for v1.5.5
+
 def menu_principal():
     opciones = ["Registrar", "Mostrar", "Total", "Editar", "Eliminar", "Buscar", "Salir"]
     while True:
         try:
-            opcion = int(input("Seleccione la opcion deseada ingresando el numero correspondiente:\n\n1. Registrar gasto\n2. Mostrar gastos\n3. Ver total gastado\n4. Editar un gasto\n5. Eliminar un gasto\n6. Buscar un gasto\n7. Salir\n\nIngrese la opcion deseada a continuacion: "))
+            opcion = int(input("\nSeleccione la opcion deseada ingresando el numero correspondiente:\n\n1. Registrar gasto\n2. Mostrar gastos\n3. Ver total gastado\n4. Editar un gasto\n5. Eliminar un gasto\n6. Buscar un gasto\n7. Salir\n\nIngrese la opcion deseada a continuacion: "))
         except ValueError:
           print("Opcion invalida. Intente nuevamente\n")
         else:
@@ -252,6 +261,7 @@ def menu_principal():
     return opcion
 
 print("Bienvenido al registra-gastos v1.5.3\n")
+print("See latest logs and updates at github.com/samuguerraa/registra-gastos")
 
 opcion = menu_principal()
 while opcion != 7:
