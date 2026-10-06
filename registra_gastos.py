@@ -23,10 +23,10 @@ def obtener_fecha():
     fecha = datetime.date.today()
     return fecha
 
-def obtener_categoria(): 
-    categorias = ["Transporte", "Alimentacion / Restaurantes", "Entretenimiento / Ocio", "Salud", "Educacion", "Ropa / Calzado", "Supermercado", "Viajes", "Servicios",
-              "Compras", "Otros"]
+categorias = ["transporte", "alimentacion / restaurantes", "entretenimiento / ocio", "salud", "educacion", "ropa / calzado", "supermercado", "viajes", "servicios",
+              "compras", "otros"]
 
+def obtener_categoria(): 
     categoria = -1
     while True:
         try:
@@ -93,8 +93,8 @@ def calcular_total_gastado():
     return total_gastos
 
 def obtener_indice_gasto():
-    print("A continuacion se muestran los gastos encontrados. Introduzca el numero del gasto deseado o escriba 0 para volver:")
     if mostrar_gastos():
+        print("A continuacion se muestran los gastos encontrados. Introduzca el numero del gasto deseado o escriba 0 para volver:")
         while True:
             try:
                 gasto_seleccionado = int(input("\n\nIngrese el numero correspondiente al gasto deseado: "))
@@ -105,8 +105,9 @@ def obtener_indice_gasto():
                 if indice not in range(-1, len(gastos)):
                     print(f"No se encontro el gasto numero {gasto_seleccionado}. Intente nuevamente.")
                 else:
-                    return indice
+                    return indice   
     else:
+        print("No se encontraron gastos registrados.")
         return
     
 def editar_gasto():
@@ -181,11 +182,66 @@ def eliminar_gasto():
             else:
                 print("Opción inválida. Intente nuevamente\n")
 
-def menu_principal():
-    opciones = ["Registrar", "Mostrar", "Total", "Editar", "Eliminar", "Salir"]
+def buscar_gastos():
+    opciones = ["Categoria", "Descripcion", "Cancelar"]
+    print("Seleccione el criterio de busqueda deseado:\n\n1. Buscar por categoria\n2. Buscar por descripcion\n3. Cancelar")
     while True:
         try:
-            opcion = int(input("Seleccione la opcion deseada ingresando el numero correspondiente:\n\n1. Registrar gasto\n2. Mostrar gastos\n3. Ver total gastado\n4. Editar un gasto\n5. Eliminar un gasto\n6. Salir\n\nIngrese la opcion deseada a continuacion: "))
+            opcion_busqueda = int(input("Ingrese el numero correspondiente a la opción deseada: "))
+        except ValueError:
+            print("Se debe ingresar un numero, intente nuevamente")
+        else:
+            if opcion_busqueda not in range(1, len(opciones) + 1):
+                print("Opcion inválida. Intente nuevamente\n")
+            else:
+                match opcion_busqueda:
+                    case 1:
+                        buscar_por_categoria()
+                        return
+                    case 2:
+                        buscar_por_descripcion()
+                        return
+                    case 3:
+                        print("Operación cancelada con éxito.")
+                        return
+
+def buscar_por_categoria():
+    categoria_buscada = obtener_categoria()
+    gastos_encontrados = False
+    for indice, gasto in enumerate(gastos):
+        if categoria_buscada in gasto['categoria']:
+            gastos_encontrados = True
+            print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
+    if not gastos_encontrados:
+        print(f"No se encontró ningún gasto con la categoría {categoria_buscada}\n")
+        return
+    return
+
+def buscar_por_descripcion():
+    while True:
+        descripcion_buscada = input("\nIngrese la descripcion que desea buscar: ")
+        descripcion_buscada = descripcion_buscada.strip()
+        descripcion_buscada = descripcion_buscada.lower()
+        gastos_encontrados = False
+        for indice, gasto in enumerate(gastos):
+            descripcion_normalizada = gasto['descripcion']
+            descripcion_normalizada = descripcion_normalizada.lower()
+            if not descripcion_buscada:
+                print("No se introdujo ningún critero de búsqueda. Intente nuevamente\n")
+            else:
+                if descripcion_buscada in descripcion_normalizada:
+                    gastos_encontrados = True
+                    print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
+        if not gastos_encontrados:
+            print(f"No se encontró ningún gasto con el criterio de búsqueda especificado\n")
+            return
+        return
+
+def menu_principal():
+    opciones = ["Registrar", "Mostrar", "Total", "Editar", "Eliminar", "Buscar", "Salir"]
+    while True:
+        try:
+            opcion = int(input("Seleccione la opcion deseada ingresando el numero correspondiente:\n\n1. Registrar gasto\n2. Mostrar gastos\n3. Ver total gastado\n4. Editar un gasto\n5. Eliminar un gasto\n6. Buscar un gasto\n7. Salir\n\nIngrese la opcion deseada a continuacion: "))
         except ValueError:
           print("Opcion invalida. Intente nuevamente\n")
         else:
@@ -195,10 +251,10 @@ def menu_principal():
                 print("Opcion invalida. Intente nuevamente\n") 
     return opcion
 
-print("Bienvenido al registra-gastos v1.5.2\n")
+print("Bienvenido al registra-gastos v1.5.3\n")
 
 opcion = menu_principal()
-while opcion != 6:
+while opcion != 7:
     match opcion:
         case 1:
             gastos.append(registrar_gasto())
@@ -215,6 +271,9 @@ while opcion != 6:
 
         case 5: 
             eliminar_gasto()
+
+        case 6:
+            buscar_gastos()
 
         case _:
              print("Error al procesar la opcion. Intente nuevamente")
