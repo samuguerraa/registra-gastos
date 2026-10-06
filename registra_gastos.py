@@ -93,17 +93,17 @@ def calcular_total_gastado():
     return total_gastos
 
 def obtener_indice_gasto():
-    print("A continuacion se muestran los gastos encontrados. Introduzca el numero del gasto que desea editar o escriba 0 para volver:")
+    print("A continuacion se muestran los gastos encontrados. Introduzca el numero del gasto deseado o escriba 0 para volver:")
     if mostrar_gastos():
         while True:
             try:
-                gasto_a_editar = int(input("\n\nIngrese el numero correspondiente al gasto deseado: "))
+                gasto_seleccionado = int(input("\n\nIngrese el numero correspondiente al gasto deseado: "))
             except ValueError:
                 print("Se debe ingresar un numero, intente nuevamente.")
             else: 
-                indice = gasto_a_editar - 1
+                indice = gasto_seleccionado - 1
                 if indice not in range(-1, len(gastos)):
-                    print(f"No se encontro el gasto numero {gasto_a_editar}. Intente nuevamente.")
+                    print(f"No se encontro el gasto numero {gasto_seleccionado}. Intente nuevamente.")
                 else:
                     return indice
     else:
@@ -112,7 +112,7 @@ def obtener_indice_gasto():
 def editar_gasto():
     indice = obtener_indice_gasto()
     if indice == -1:
-        print("Operacion cancelada exitosamente. No se edito ningun gasto")
+        print("Operacion cancelada exitosamente.")
         return
     elif indice is None:
         return
@@ -159,12 +159,33 @@ def editar_valor(indice):
     nuevo_valor = obtener_valor()
     gastos[indice]['valor'] = nuevo_valor
     print(f"Valor actualizado con éxito a {nuevo_valor}")
-        
+
+def eliminar_gasto():
+    indice = obtener_indice_gasto()
+    if indice == -1:
+        print("Operacion cancelada exitosamente.")
+        return
+    elif indice is None:
+        return
+    else:
+        print(f"""Esta a punto de eliminar el gasto numero {indice + 1}.\nFecha: {gastos[indice]['fecha']}\nCategoria: {gastos[indice]['categoria']}\nDescripción: {gastos[indice]['descripcion']}\nValor: {gastos[indice]['valor']}""")
+        while True:
+            confirmacion = input("\n\n¿Desea continuar (y/n)?: ")
+            if confirmacion.lower() == 'y':
+                gastos.pop(indice)
+                print("Gasto eliminado con éxito.")
+                return
+            elif confirmacion.lower() == 'n':
+                print("Operación cancelada exitosamente. No se eliminó ningún gasto\n")
+                return
+            else:
+                print("Opción inválida. Intente nuevamente\n")
+
 def menu_principal():
-    opciones = ["Registrar", "Mostrar", "Total", "Editar", "Salir"]
+    opciones = ["Registrar", "Mostrar", "Total", "Editar", "Eliminar", "Salir"]
     while True:
         try:
-            opcion = int(input("Seleccione la opcion deseada ingresando el numero correspondiente:\n\n1. Registrar gasto\n2. Mostrar gastos\n3. Ver total gastado\n4. Editar un gasto\n5. Salir\n\nIngrese la opcion deseada a continuacion: "))
+            opcion = int(input("Seleccione la opcion deseada ingresando el numero correspondiente:\n\n1. Registrar gasto\n2. Mostrar gastos\n3. Ver total gastado\n4. Editar un gasto\n5. Eliminar un gasto\n6. Salir\n\nIngrese la opcion deseada a continuacion: "))
         except ValueError:
           print("Opcion invalida. Intente nuevamente\n")
         else:
@@ -174,10 +195,10 @@ def menu_principal():
                 print("Opcion invalida. Intente nuevamente\n") 
     return opcion
 
-print("Bienvenido al registra-gastos v1.5.1\n")
+print("Bienvenido al registra-gastos v1.5.2\n")
 
 opcion = menu_principal()
-while opcion != 5:
+while opcion != 6:
     match opcion:
         case 1:
             gastos.append(registrar_gasto())
@@ -192,7 +213,12 @@ while opcion != 5:
         case 4:
             editar_gasto()
 
+        case 5: 
+            eliminar_gasto()
+
         case _:
              print("Error al procesar la opcion. Intente nuevamente")
 
     opcion = menu_principal()
+
+print("\n¡Gracias por registrar sus gastos!")
