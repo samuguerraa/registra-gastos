@@ -87,10 +87,13 @@ def mostrar_gastos():
     return True
 
 def calcular_total_gastado():
-    total_gastos = 0
-    for gasto in gastos:
-        total_gastos += gasto['valor']
-    return total_gastos
+    if not gastos:
+        return 0
+    else:
+        total_gastos = 0
+        for gasto in gastos:
+            total_gastos += gasto['valor']
+        return total_gastos
 
 def obtener_indice_gasto():
     if mostrar_gastos():
@@ -111,40 +114,44 @@ def obtener_indice_gasto():
         return
     
 def editar_gasto():
-    indice = obtener_indice_gasto()
-    if indice == -1:
-        print("Operacion cancelada exitosamente.")
-        return
-    elif indice is None:
+    if not gastos:
+        print("No hay gastos registrados")
         return
     else:
-        print("\n¿Que desea modificar? Seleccione el numero correspondiente a la opcion deseada:\n\n" 
-            "1. Editar categoría\n"
-            "2. Editar descripcion\n"
-            "3. Editar valor\n"
-            "4. Cancelar\n")
-        while True:
-            try:
-                opcion_a_editar = int(input("\nIntroduzca el numero correspondiente a la opcion deseada: "))
-            except ValueError:
-                print("Se debe introducir un numero. Intente nuevamente.")
-            else:
-                if opcion_a_editar not in range(1, 5):
-                    print("Opción inválida. Intente nuevamente")
+        indice = obtener_indice_gasto()
+        if indice == -1:
+            print("Operacion cancelada exitosamente.")
+            return
+        elif indice is None:
+            return
+        else:
+            print("\n¿Que desea modificar? Seleccione el numero correspondiente a la opcion deseada:\n\n" 
+                "1. Editar categoría\n"
+                "2. Editar descripcion\n"
+                "3. Editar valor\n"
+                "4. Cancelar\n")
+            while True:
+                try:
+                    opcion_a_editar = int(input("\nIntroduzca el numero correspondiente a la opcion deseada: "))
+                except ValueError:
+                    print("Se debe introducir un numero. Intente nuevamente.")
                 else:
-                    break
-        match opcion_a_editar:
-            case 1:
-                editar_categoria(indice)
-            case 2:
-                editar_descripcion(indice)
-            case 3:
-                editar_valor(indice)
-            case 4:
-                print("Operacion cancelada exitosamente. No se edito ningun gasto")
-                return
-            case _:
-                print("Error al procesar la opcion. Intente nuevamente.")
+                    if opcion_a_editar not in range(1, 5):
+                        print("Opción inválida. Intente nuevamente")
+                    else:
+                        break
+            match opcion_a_editar:
+                case 1:
+                    editar_categoria(indice)
+                case 2:
+                    editar_descripcion(indice)
+                case 3:
+                    editar_valor(indice)
+                case 4:
+                    print("Operacion cancelada exitosamente. No se edito ningun gasto")
+                    return
+                case _:
+                    print("Error al procesar la opcion. Intente nuevamente.")
 
 def editar_categoria(indice):
     nueva_categoria = obtener_categoria()
@@ -162,48 +169,59 @@ def editar_valor(indice):
     print(f"Valor actualizado con éxito a {nuevo_valor}")
 
 def eliminar_gasto():
-    indice = obtener_indice_gasto()
-    if indice == -1:
-        print("Operacion cancelada exitosamente.")
-        return
-    elif indice is None:
+    if not gastos:
+        print("No hay gastos registrados.")
         return
     else:
-        print(f"""Esta a punto de eliminar el gasto numero {indice + 1}.\nFecha: {gastos[indice]['fecha']}\nCategoria: {gastos[indice]['categoria']}\nDescripción: {gastos[indice]['descripcion']}\nValor: {gastos[indice]['valor']}""")
-        while True:
-            confirmacion = input("\n\n¿Desea continuar (y/n)?: ")
-            if confirmacion.lower() == 'y':
-                gastos.pop(indice)
-                print("Gasto eliminado con éxito.")
-                return
-            elif confirmacion.lower() == 'n':
-                print("Operación cancelada exitosamente. No se eliminó ningún gasto\n")
-                return
-            else:
-                print("Opción inválida. Intente nuevamente\n")
+        indice = obtener_indice_gasto()
+        if indice == -1:
+            print("Operacion cancelada exitosamente.")
+            return
+        elif indice is None:
+            return
+        else:
+            print(f"""Esta a punto de eliminar el gasto numero {indice + 1}.\nFecha: {gastos[indice]['fecha']}\nCategoria: {gastos[indice]['categoria']}\nDescripción: {gastos[indice]['descripcion']}\nValor: {gastos[indice]['valor']}""")
+            while True:
+                confirmacion = input("\n\n¿Desea continuar (y/n)?: ")
+                if confirmacion.lower() == 'y':
+                    gastos.pop(indice)
+                    print("Gasto eliminado con éxito.")
+                    return
+                elif confirmacion.lower() == 'n':
+                    print("Operación cancelada exitosamente. No se eliminó ningún gasto\n")
+                    return
+                else:
+                    print("Opción inválida. Intente nuevamente\n")
 
 def buscar_gastos():
-    opciones = ["Categoria", "Descripcion", "Cancelar"]
-    print("Seleccione el criterio de busqueda deseado:\n\n1. Buscar por categoria\n2. Buscar por descripcion\n3. Cancelar")
-    while True:
-        try:
-            opcion_busqueda = int(input("Ingrese el numero correspondiente a la opción deseada: "))
-        except ValueError:
-            print("Se debe ingresar un numero, intente nuevamente")
-        else:
-            if opcion_busqueda not in range(1, len(opciones) + 1):
-                print("Opcion inválida. Intente nuevamente\n")
+    if not gastos:
+        print("No hay gastos registrados.")
+        return
+    else:
+        opciones = ["Categoria", "Descripcion", "Fechas", "Cancelar"]
+        print("Seleccione el criterio de busqueda deseado:\n\n1. Buscar por categoria\n2. Buscar por descripcion\n3. Buscar por fecha\n4. Cancelar")
+        while True:
+            try:
+                opcion_busqueda = int(input("Ingrese el numero correspondiente a la opción deseada: "))
+            except ValueError:
+                print("Se debe ingresar un numero, intente nuevamente")
             else:
-                match opcion_busqueda:
-                    case 1:
-                        buscar_por_categoria()
-                        return
-                    case 2:
-                        buscar_por_descripcion()
-                        return
-                    case 3:
-                        print("Operación cancelada con éxito.")
-                        return
+                if opcion_busqueda not in range(1, len(opciones) + 1):
+                    print("Opcion inválida. Intente nuevamente\n")
+                else:
+                    match opcion_busqueda:
+                        case 1:
+                            buscar_por_categoria()
+                            return
+                        case 2:
+                            buscar_por_descripcion()
+                            return
+                        case 3:
+                            buscar_por_fechas()
+                            return
+                        case 4:
+                            print("Operación cancelada con éxito.")
+                            return
 
 def buscar_por_categoria():
     categoria_buscada = obtener_categoria()
@@ -239,8 +257,104 @@ def buscar_por_descripcion():
         return
 
 def buscar_por_fechas():
-    pass 
-    # Expected function for v1.5.4
+     if not gastos:
+         print("No hay gastos registrados.")
+         return
+     else:
+        print("A continuacion se muestran las opciones de busqueda disponibles:\n\n1. Buscar fecha exacta\n2. Buscar después de una fecha\n3. Buscar antes de una fecha\n4. Buscar entre 2 fechas\n")
+        while True:
+            try:
+                opcion_para_busqueda = int(input("\nIngrese el numero correspondiente a la opcion deseada: "))
+            except ValueError:
+                print("Se debe ingresar un número. Intente nuevamente")
+            else:
+                if opcion_para_busqueda in range(1, 5):
+                    fechas_busqueda = obtener_fechas_busqueda(opcion_para_busqueda)
+                    break
+                else:
+                    print("Opcion no encontrada o invalida. Intente de nuevo.\n")
+                    continue
+
+        gastos_encontrados = False
+        match opcion_para_busqueda:
+            case 1:
+                for indice, gasto in enumerate(gastos):
+                    if fechas_busqueda == gasto['fecha']:
+                        gastos_encontrados = True
+                        print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
+            case 2:
+                for indice, gasto in enumerate(gastos):
+                    if fechas_busqueda < gasto['fecha']:
+                        gastos_encontrados = True
+                        print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
+
+            case 3:
+                for indice, gasto in enumerate(gastos):
+                    if fechas_busqueda > gasto['fecha']:
+                        gastos_encontrados = True
+                        print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
+
+            case 4: 
+                for indice, gasto in enumerate(gastos):
+                    if fechas_busqueda[0] <= gasto['fecha'] and fechas_busqueda[1] >= gasto['fecha']:
+                        gastos_encontrados = True
+                        print(f"Gasto #{indice + 1}:\n\nFecha: {gasto['fecha']}\nCategoría: {gasto['categoria']}\nDescripcion: {gasto['descripcion']}\nValor: {gasto['valor']}\n\n")
+
+     if not gastos_encontrados:
+         print(f"No se encontro ningun gasto con los criterios de busqueda especificados")
+             
+def obtener_fechas_busqueda(opcion_busqueda):
+    match opcion_busqueda:
+        case 1 | 2 | 3:
+            while True:
+                try:
+                    año = int(input("Ingrese año (en numeros) que desea buscar: "))
+                    mes = int(input("Ingrese mes (en numeros) que desea buscar: "))
+                    dia = int(input("Ingrese dia (en numeros) que desea buscar: "))
+                except ValueError:
+                    print("Se debe ingresar un numero, intente nuevamente.\n")
+                else:
+                    try:
+                        fecha = datetime.date(año, mes, dia)
+                    except ValueError:
+                        print(f"La fecha {año}-{mes}-{dia} es invalida. Intente nuevamente\n")
+                        continue
+                    else:
+                        return fecha
+        case 4:
+            while True:
+                try:
+                    año_inicio = int(input("Ingrese año inicial en numeros: "))
+                    mes_inicio = int(input("Ingrese mes inicial en numeros: "))
+                    dia_inicio = int(input("Ingrese dia inicial en numeros: "))
+
+                    año_fin = int(input("Ingrese año final en numeros: "))
+                    mes_fin = int(input("Ingrese mes final en numeros: "))
+                    dia_fin = int(input("Ingrese dia fin en numeros: "))
+
+                except ValueError:
+                    print("Se deben ingresar numeros, intente nuevamente\n")
+                    continue
+
+                else:
+                    try:
+                        fecha_inicio = datetime.date(año_inicio, mes_inicio, dia_inicio)
+                    except ValueError:
+                        print(f"La fecha {año_inicio}-{mes_inicio}-{dia_inicio} es invalida. Intente nuevamente\n")
+                        continue
+                    else:
+                        try:
+                            fecha_fin = datetime.date(año_fin, mes_fin, dia_fin)
+                        except ValueError:
+                            print(f"La fecha {año_fin}-{mes_fin}-{dia_fin} es invalida. Intente nuevamente\n")
+                            continue
+                        else:
+                            if fecha_fin >= fecha_inicio:
+                                fechas = [fecha_inicio, fecha_fin]
+                                return fechas
+                            else:
+                                print("La fecha de inicio no puede ser superior a la fecha final. Intente nuevamente\n")
+                                continue
 
 def buscar_por_valor():
     pass
@@ -260,7 +374,7 @@ def menu_principal():
                 print("Opcion invalida. Intente nuevamente\n") 
     return opcion
 
-print("Bienvenido al registra-gastos v1.5.3\n")
+print("Bienvenido al registra-gastos v1.5.4\n")
 print("See latest logs and updates at github.com/samuguerraa/registra-gastos")
 
 opcion = menu_principal()
